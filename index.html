@@ -10,13 +10,32 @@
 <script src="script.js" defer></script>
 
 <body>
+    <div class="dark-mode-toggle">
+        <label class="switch">
+            <input type="checkbox" id="dark-mode-toggle">
+            <span class="slider round"></span>
+        </label>
+    </div>
+
     <h1>Weather Dashboard</h1>
     <input type="text" id="city-input" placeholder="Enter city name">
     <button id="search-button">Search</button>
-    <div id="weather-dashboard"></div>
-    <div id="weather-details"></div>
     <div id="weather-box"></div>
 
+
+    <div id="buttons">
+        <button id="unit-toggle">Switch to °C</button>
+        <button id="current-btn">Current</button>
+        <button id="three-day-btn">3 Day</button>
+        <button id="seven-day-btn">7 Day</button>
+    </div>
+
+
+
+
 </body>
+
+</div>
+
 
 </html>
