@@ -23,23 +23,6 @@ function updateWeatherCard() {
     data.forecast.forecastday[0].astro.sunset
   ).toLocaleTimeString();
   const iconUrl = `https:${data.current.condition.icon}`;
-  function updateDetailsCard() {
-    const astro = data.forecast.forecastday[0].astro;
-    const sunrise = astro.sunrise;
-    const sunset = astro.sunset;
-    document.getElementById("details-box").innerHTML = `
-    <p>Feels like: ${
-      isCelsius
-        ? convertTemp(data.current.feelslike_f).toFixed(1)
-        : data.current.feelslike_f.toFixed(1)
-    }°${isCelsius ? "C" : "F"}</p>
-    <p>Humidity: ${data.current.humidity}%</p>
-    <p>Wind Speed: ${data.current.wind_kph} km/h</p>
-    <p>Pressure: ${data.current.pressure_mb} hPa</p>
-    <p>Sunrise: ${sunrise}</p>
-    <p>Sunset: ${sunset}</p>
-  `;
-  }
 
   document.getElementById("weather-box").innerHTML = `
     <div class="weather-card">
