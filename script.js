@@ -16,12 +16,9 @@ function updateWeatherCard() {
   const humidity = data.current.humidity;
   const windSpeed = data.current.wind_kph;
   const pressure = data.current.pressure_mb;
-  const sunrise = new Date(
-    data.forecast.forecastday[0].astro.sunrise
-  ).toLocaleTimeString();
-  const sunset = new Date(
-    data.forecast.forecastday[0].astro.sunset
-  ).toLocaleTimeString();
+  const sunrise = data.forecast.forecastday[0].astro.sunrise;
+  const sunset = data.forecast.forecastday[0].astro.sunset;
+
   const iconUrl = `https:${data.current.condition.icon}`;
 
   document.getElementById("weather-box").innerHTML = `

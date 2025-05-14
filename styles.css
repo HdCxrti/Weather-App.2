@@ -46,8 +46,6 @@ h1 {
   width: 220px;
   margin: 10px auto;
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-}
-.weather-card {
   background-color: #333;
   color: #fff;
   border-radius: 10px;
@@ -58,38 +56,6 @@ h1 {
   flex-direction: column;
   align-items: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-#temperature {
-  font-size: 36px;
-}
-
-#temperature h1 {
-  font-size: 48px;
-  margin: 0;
-}
-
-#condition {
-  text-align: center;
-}
-
-#condition img {
-  width: 50px;
-  height: 50px;
-}
-
-#details {
-  margin-top: 20px;
-  font-size: 14px;
-  text-align: left;
-}
-
-#details p {
-  margin: 5px 0;
-}
-
-#details strong {
-  font-weight: bold;
 }
 .dark-mode-toggle {
   position: fixed;
@@ -151,11 +117,6 @@ body.dark-mode input,
 body.dark-mode button {
   background: #555;
   color: #eee;
-}
-.weather-card,
-.forecast-day {
-  background: #fff;
-  color: #000;
 }
 
 body.dark-mode .weather-card,
