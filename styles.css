@@ -128,3 +128,10 @@ body.dark-mode .forecast-day {
 body.dark-mode .forecast-day img {
   filter: none;
 }
+#forecast-box {
+  display: flex;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+  justify-items: center;
+  padding: 1rem 0;
+}

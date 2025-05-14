@@ -55,8 +55,8 @@ document.getElementById("search-button").addEventListener("click", () => {
     alert("Please enter a city name");
     return;
   }
-
-  const url = `https://api.weatherapi.com/v1/forecast.json?key=075afc9c7dbb487ab8f133712251305&q=${city}&days=7`;
+  // fetchForecast(city, 7);
+  const url = `http://192.168.4.28:8088/system/webdev/samplequickstart/API/forecast.json?q=${city}&days=7&aqi=no&alerts=no`;
 
   fetch(url)
     .then((response) => response.json())
@@ -71,24 +71,29 @@ document.getElementById("search-button").addEventListener("click", () => {
 });
 
 function fetchForecast(city, days) {
-  const url = `https://api.weatherapi.com/v1/forecast.json?key=075afc9c7dbb487ab8f133712251305&q=${city}&days=${days}`;
+  const url =
+    `http://192.168.4.28:8088/system/webdev/samplequickstart/API/forecast.json` +
+    `?q=${encodeURIComponent(city)}&days=${days}&aqi=no&alerts=no`;
 
   fetch(url)
     .then((res) => res.json())
-    .then((fetchedData) => {
-      const weatherbox = document.getElementById("weather-box");
-      weatherbox.innerHTML = fetchedData.forecast.forecastday
-        .map(
-          (day) => `
-        <div class="forecast-day">
+    .then((data) => {
+      updateWeatherCard();
+
+      data.forecast.forecastday.forEach((day, i) => {
+        const slot = document.getElementById(`day${i + 1}`);
+        if (!slot) return;
+
+        slot.innerHTML = `
           <h4>${day.date}</h4>
-          <p>${day.day.avgtemp_f}°F – ${day.day.condition.text}</p>
-          <img src="https:${day.day.condition.icon}" alt="${day.day.condition.text}">
-        </div>
-      `
-        )
-        .join("");
-    });
+          <p>${day.day.avgtemp_f.toFixed(1)}°F – ${day.day.condition.text}</p>
+          <img src="https:${day.day.condition.icon}" alt="${
+          day.day.condition.text
+        }" />
+        `;
+      });
+    })
+    .catch((err) => console.error(err));
 }
 
 document.getElementById("current-btn").addEventListener("click", () => {
@@ -100,6 +105,7 @@ document.getElementById("current-btn").addEventListener("click", () => {
 document.getElementById("three-day-btn").addEventListener("click", () => {
   if (data.location) {
     fetchForecast(data.location.name, 3);
+    console.log(data.location.name);
   }
 });
 
