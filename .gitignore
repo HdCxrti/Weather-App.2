@@ -1,0 +1,14 @@
+# dependencies
+node_modules/
+
+# macOS
+.DS_Store
+
+# VS Code
+.vscode/
+
+# logs
+*.log
+
+# Python HTTP server cache
+__pycache__/
