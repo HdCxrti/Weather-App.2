@@ -22,7 +22,7 @@ function updateWeatherCard() {
   const iconUrl = `https:${data.current.condition.icon}`;
 
   document.getElementById("weather-box").innerHTML = `
-    <div class="weather-card">
+    <div class="forecast-day" id="day1">
       <h2>${data.location.name}</h2>
       <p><strong>${temp.toFixed(1)}°${
     isCelsius ? "C" : "F"
@@ -111,7 +111,8 @@ document.getElementById("three-day-btn").addEventListener("click", () => {
 
 document.getElementById("seven-day-btn").addEventListener("click", () => {
   if (data.location) {
-    fetchForecast(data.location.name, 7);
+    // fetchForecast(data.location.name, 7);
+    console.log(data.location.name);
   }
 });
 const dmToggle = document.getElementById("dark-mode-toggle");
