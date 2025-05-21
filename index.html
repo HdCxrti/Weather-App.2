@@ -6,15 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modern Weather Dashboard 2.0</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="icon" href="favicon.ico" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify@{{ version }}/dist/vuetify.min.css" />
+    <link rel="icon" href="favicon.ico" />    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vuetify@3.5.1/dist/vuetify.min.css" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@latest/css/materialdesignicons.min.css" />
-    <link rel="stylesheet" href="https://fonts.bunny.net/css?family=roboto:400,500,700" />
-    <script type="importmap">
+    <link rel="stylesheet" href="https://fonts.bunny.net/css?family=roboto:400,500,700" />    <script type="importmap">
   {
     "imports": {
-      "vue": "https://cdn.jsdelivr.net/npm/vue@latest/dist/vue.esm-browser.js",
-      "vuetify": "https://cdn.jsdelivr.net/npm/vuetify@{{ version }}/dist/vuetify.esm.js"
+      "vue": "/node_modules/vue/dist/vue.esm-browser.js",
+      "vuetify": "/node_modules/vuetify/dist/vuetify.esm.js"
     }
   }
   </script>
@@ -22,47 +20,201 @@
 <script src="script.js" defer></script>
 
 <body>
-    <div class="dark-mode-toggle">
-        <label class="switch">
-            <input type="checkbox" id="dark-mode-toggle">
-            <span class="slider round"></span>
-        </label>
-    </div>
+    <div id="app">
+        <div class="dark-mode-toggle">
+            <label class="switch">
+                <input type="checkbox" id="dark-mode-toggle" @click="toggleDarkMode">
+                <span class="slider round"></span>
+            </label>
+        </div>
 
-    <h1>Weather Dashboard</h1>
-    <input type="text" id="city-input" placeholder="Enter city name">
-    <button id="search-button">Search</button>
-    <div id="weather-box">
-        <div class="forecast-day" id="day1"></div>
-        <div class="forecast-day" id="day2"></div>
-        <div class="forecast-day" id="day3"></div>
-        <div class="forecast-day" id="day4"></div>
-        <div class="forecast-day" id="day5"></div>
-        <div class="forecast-day" id="day6"></div>
-        <div class="forecast-day" id="day7"></div>
-    </div>
-    <div id="forecast-box">
+        <h1>Weather Dashboard</h1>
+        <input type="text" id="city-input" placeholder="Enter city name">
+        <button id="search-button">Search</button>
+        <div id="weather-box">
+            <div class="forecast-day" id="day1"></div>
+            <div class="forecast-day" id="day2"></div>
+            <div class="forecast-day" id="day3"></div>
+            <div class="forecast-day" id="day4"></div>
+            <div class="forecast-day" id="day5"></div>
+            <div class="forecast-day" id="day6"></div>
+            <div class="forecast-day" id="day7"></div>
+        </div>
+        <div id="forecast-box">
 
-    </div>
-
-
-    <div id="buttons">
-        <button id="unit-toggle">Switch to °C</button>
-        <button id="current-btn">Current</button>
-        <button id="three-day-btn">3 Day</button>
-        <button id="seven-day-btn">7 Day</button>
-    </div>
+        </div>
 
 
-
-    <script type="module">
-        import { createApp, ref, computed } from "vue"
+        <div id="buttons">
+            <button id="unit-toggle">Switch to °C</button>
+            <button id="current-btn">Current</button>
+            <button id="three-day-btn">3 Day</button>
+            <button id="seven-day-btn">7 Day</button>
+        </div>
+    </div>    <script type="module">
+        import { createApp, ref, computed, onMounted } from "vue"
         import { createVuetify } from "vuetify"
-        //... setup as usual
+        
+        // Create Vuetify instance
+        const vuetify = createVuetify()
+        
+        // Create Vue app
+        const app = createApp({
+            setup() {
+                const darkMode = ref(false)
+                const isCelsius = ref(false)
+                const weatherData = ref(null)
+                const cityInput = ref('')
+                const displayMode = ref('current') // 'current', 'three-day', 'seven-day'
+                
+                // Toggle dark mode
+                const toggleDarkMode = () => {
+                    darkMode.value = !darkMode.value
+                    document.body.classList.toggle('dark-mode', darkMode.value)
+                }
+
+                // Toggle temperature unit
+                const toggleUnit = () => {
+                    isCelsius.value = !isCelsius.value
+                    document.getElementById('unit-toggle').textContent = 
+                        isCelsius.value ? 'Switch to °F' : 'Switch to °C'
+                }
+                
+                // Search for weather data
+                const searchWeather = async () => {
+                    const city = document.getElementById('city-input').value
+                    if (!city) return
+                    
+                    try {
+                        // The API key would typically be stored server-side
+                        // This is just for demonstration
+                        const response = await fetch(
+                            `https://api.weatherapi.com/v1/forecast.json?key=YOUR_API_KEY&q=${city}&days=7&aqi=no&alerts=no`
+                        )
+                        
+                        if (!response.ok) {
+                            throw new Error('Weather data not available')
+                        }
+                        
+                        weatherData.value = await response.json()
+                        updateWeatherDisplay()
+                    } catch (error) {
+                        console.error('Error fetching weather data:', error)
+                        alert('Could not fetch weather data. Please try again.')
+                    }
+                }
+                  // Display current weather
+                const displayCurrentWeather = () => {
+                    const data = weatherData.value
+                    const temp = isCelsius.value
+                        ? ((data.current.temp_f - 32) * 5) / 9
+                        : data.current.temp_f
+                    const feelsLike = isCelsius.value
+                        ? ((data.current.feelslike_f - 32) * 5) / 9
+                        : data.current.feelslike_f
+                    const condition = data.current.condition.text
+                    const humidity = data.current.humidity
+                    const windSpeed = data.current.wind_kph
+                    const iconUrl = `https:${data.current.condition.icon}`
+
+                    document.getElementById("weather-box").innerHTML = `
+                        <div class="forecast-day" id="day1">
+                            <h2>${data.location.name}</h2>
+                            <p><strong>${temp.toFixed(1)}°${isCelsius.value ? "C" : "F"}</strong> – ${condition}</p>
+                            <img src="${iconUrl}" alt="${condition}">
+                            <p>Feels like: ${feelsLike.toFixed(1)}°${isCelsius.value ? "C" : "F"}</p>
+                            <p>Humidity: ${humidity}%</p>
+                            <p>Wind: ${windSpeed} km/h</p>
+                        </div>
+                    `
+                }
+
+                // Display forecast
+                const displayForecast = (days) => {
+                    const data = weatherData.value
+                    let forecastHTML = ''
+                    
+                    // Get the number of days to display (limited to the available forecast data)
+                    const daysToShow = Math.min(days, data.forecast.forecastday.length)
+                    
+                    for (let i = 0; i < daysToShow; i++) {
+                        const day = data.forecast.forecastday[i]
+                        const date = new Date(day.date)
+                        const dayName = date.toLocaleDateString('en-US', { weekday: 'short' })
+                        const temp = isCelsius.value
+                            ? ((day.day.avgtemp_f - 32) * 5) / 9
+                            : day.day.avgtemp_f
+                        const condition = day.day.condition.text
+                        const iconUrl = `https:${day.day.condition.icon}`
+                        
+                        forecastHTML += `
+                            <div class="forecast-day" id="day${i+1}">
+                                <h3>${dayName}</h3>
+                                <p>${temp.toFixed(1)}°${isCelsius.value ? "C" : "F"}</p>
+                                <img src="${iconUrl}" alt="${condition}">
+                                <p>${condition}</p>
+                            </div>
+                        `
+                    }
+                    
+                    document.getElementById("weather-box").innerHTML = forecastHTML
+                }
+                
+                // Update weather display based on current mode
+                const updateWeatherDisplay = () => {
+                    if (!weatherData.value) return
+                    
+                    switch(displayMode.value) {
+                        case 'current':
+                            displayCurrentWeather()
+                            break
+                        case 'three-day':
+                            displayForecast(3)
+                            break
+                        case 'seven-day':
+                            displayForecast(7)
+                            break
+                    }
+                }
+                
+                // Set up event listeners
+                onMounted(() => {
+                    document.getElementById('search-button').addEventListener('click', searchWeather)
+                    document.getElementById('unit-toggle').addEventListener('click', toggleUnit)
+                    document.getElementById('current-btn').addEventListener('click', () => {
+                        displayMode.value = 'current'
+                        updateWeatherDisplay()
+                    })
+                    document.getElementById('three-day-btn').addEventListener('click', () => {
+                        displayMode.value = 'three-day'
+                        updateWeatherDisplay()
+                    })
+                    document.getElementById('seven-day-btn').addEventListener('click', () => {
+                        displayMode.value = 'seven-day'
+                        updateWeatherDisplay()
+                    })
+                })
+                
+                // Initialize app
+                return {
+                    darkMode,
+                    toggleDarkMode,
+                    isCelsius,
+                    weatherData,
+                    cityInput,
+                    displayMode,
+                    searchWeather,
+                    toggleUnit
+                }
+            }
+        })
+        
+        // Use Vuetify with Vue
+        app.use(vuetify)
+        
+        // Mount app
+        app.mount('#app')
     </script>
 </body>
-
-</div>
-
 
 </html>

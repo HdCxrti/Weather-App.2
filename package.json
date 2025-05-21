@@ -1,0 +1,30 @@
+{
+  "name": "weather-app.2",
+  "version": "1.0.0",
+  "description": "a simple web app that displays current weather and forecasts using WeatherAPI",
+  "main": "script.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/HdCxrti/Weather-App.2.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/HdCxrti/Weather-App.2/issues"
+  },
+  "homepage": "https://github.com/HdCxrti/Weather-App.2#readme",
+  "devDependencies": {
+    "vite": "^6.3.5"
+  },
+  "dependencies": {
+    "vue": "^3.5.14",
+    "vuetify": "^3.8.6"
+  }
+}
